@@ -1,5 +1,5 @@
-from main_window import MainWindow
-from display import Display
+from main_window import MainWindow, Display
+# from display import Display
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QApplication)
 import sys
