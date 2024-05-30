@@ -1,7 +1,7 @@
-from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget,
-                               QVBoxLayout, QLabel)
+from PySide6.QtWidgets import (QMainWindow, QWidget,
+                               QVBoxLayout)
 
-# Parente é uma janela pai, que vem antes dela
+# Parent é uma janela pai, que vem antes dela.
 # Nosso projetos não tera, mas colocamos somente para manter um padrão.
 
 
@@ -24,3 +24,7 @@ class MainWindow(QMainWindow):
         self.adjustSize()  # Ajustando o tamanho dos elementos na minha janela.
         # Fixando o tamanho da janela, pelo tamanho que ela abrir.
         self.setFixedSize(self.width(), self.height())
+
+    def add_widget_to_vlayout(self, widget: QWidget):
+        self.v_layout.addWidget(widget)
+        self.adjust_fixed_size()
