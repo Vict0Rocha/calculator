@@ -1,9 +1,8 @@
 import sys
 from PySide6.QtGui import QIcon
-from styles import setup_theme
 from PySide6.QtWidgets import QApplication
-from main_window import MainWindow, Display, Info
-from variables import WINDOW_ICON_PATH_CALCULATOR
+from main_window import (MainWindow, Display, Info, setup_theme,
+                         WINDOW_ICON_PATH_CALCULATOR)
 
 
 if __name__ == '__main__':
