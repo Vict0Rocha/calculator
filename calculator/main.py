@@ -1,7 +1,7 @@
 import sys
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
-from main_window import (MainWindow, Display, Info, setup_theme,
+from main_window import (MainWindow, Display, Info, Button, setup_theme,
                          WINDOW_ICON_PATH_CALCULATOR)
 
 
@@ -37,6 +37,9 @@ if __name__ == '__main__':
     display = Display()
     display.setPlaceholderText('0')
     window.add_to_vlayout(display)
+
+    button = Button('Texto do meu button')
+    window.add_to_vlayout(button)
 
     # Fixando o tamanha da janela
     window.adjust_fixed_size()

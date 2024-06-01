@@ -2,7 +2,7 @@ import qdarktheme
 from pathlib import Path
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QLineEdit,
-                               QLabel)
+                               QLabel, QPushButton)
 
 # VARIAVEIS CONSTANTES
 
@@ -87,6 +87,18 @@ class Info(QLabel):
         self.setAlignment(Qt.AlignmentFlag.AlignRight)
 
 
+class Button(QPushButton):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.config_style()
+
+    def config_style(self):
+        font = self.font()
+        font.setPixelSize(MEDIUM_FONT_SIZE)
+        self.setFont(font)
+        self.setMinimumSize(70, 70)
+        self.setProperty('cssClass', 'specialButton')
+
 # QSS - Estilo do QT for python
 # https://pypi.org/project/qt-material
 # Dark Theme
@@ -94,16 +106,17 @@ class Info(QLabel):
 # Outra alternativa
 # https://doc.qt.io/qtforpython-6/tutorials/basictutorial/widgetstyling.html
 
+
 qss = f"""
-    PushButton[cssClass="specialButton"] {{
+    QPushButton[cssClass="specialButton"] {{
         color: #fff;
         background: {PRIMARY_COLOR};
     }}
-    PushButton[cssClass="specialButton"]:hover {{
+    QPushButton[cssClass="specialButton"]:hover {{
         color: #fff;
         background: {DARKER_PRIMARY_COLOR};
     }}
-    PushButton[cssClass="specialButton"]:pressed {{
+    QPushButton[cssClass="specialButton"]:pressed {{
         color: #fff;
         background: {DARKEST_PRIMARY_COLOR};
     }}
