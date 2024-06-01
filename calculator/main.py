@@ -1,17 +1,18 @@
-from main_window import MainWindow, Display
-# from display import Display
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import (QApplication)
 import sys
+from PySide6.QtGui import QIcon
+from styles import setup_theme
+from PySide6.QtWidgets import QApplication
+from main_window import MainWindow, Display, Info
 from variables import WINDOW_ICON_PATH_CALCULATOR
 
 
 if __name__ == '__main__':
-    # Cria a ap↓licação☻
+    # Cria a aplicação
     app = QApplication()
+    setup_theme()
     window = MainWindow()
 
-    # Define ☻o ícone
+    # Define o ícone
     icon = QIcon(str(WINDOW_ICON_PATH_CALCULATOR))
     window.setWindowIcon(icon)
     app.setWindowIcon(icon)
@@ -28,6 +29,10 @@ if __name__ == '__main__':
         import ctypes
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
             u'CompanyName.ProductName.SubProduct.VersionInformation')
+
+    # Info
+    info = Info('2 + 5')
+    window.add_to_vlayout(info)
 
     # Display
     display = Display()

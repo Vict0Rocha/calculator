@@ -1,6 +1,9 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLineEdit
-from variables import BIG_FONT_SIZE, TEXT_MARGIN, MINIMUM_WITH
+import qdarktheme
+from variables import (BIG_FONT_SIZE, TEXT_MARGIN, MINIMUM_WITH,
+                       SMALL_FONT_SIZE)
+from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QLineEdit,
+                               QLabel)
 
 # Parent é uma janela pai, que vem antes dela.
 # Nosso projetos não tera, mas colocamos somente para manter um padrão.
@@ -38,12 +41,28 @@ class Display(QLineEdit):
     def config_style(self):
         # Fonte do display
         self.setStyleSheet(f'font-size: {BIG_FONT_SIZE}px;')
-        # Tamanho do display
+        # Tamanho do display em altura
         self.setMinimumHeight(BIG_FONT_SIZE * 2)
-        # Largura
+        # Largura em comprimento
         self.setMinimumWidth(MINIMUM_WITH)
         # Alinhando o texto a direita
         self.setAlignment(Qt.AlignmentFlag.AlignRight)
         # Margem
         margin = [TEXT_MARGIN for _ in range(4)]
         self.setTextMargins(*margin)
+
+# O label que fica em cima do display - é tipo um cache ou flashcards
+
+
+class Info(QLabel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.config_style()
+
+    def config_style(self):
+        self.setStyleSheet(f'font-size: {SMALL_FONT_SIZE}px;')
+        self.setAlignment(Qt.AlignmentFlag.AlignRight)
+
+
+def setup_theme():
+    qdarktheme.setup_theme()
