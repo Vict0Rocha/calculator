@@ -1,8 +1,8 @@
 import sys
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
-from main_window import (MainWindow, Display, Info, Button, setup_theme,
-                         WINDOW_ICON_PATH_CALCULATOR)
+from main_window import (MainWindow, Display, Info, Button, ButtonsGrid,
+                         setup_theme, WINDOW_ICON_PATH_CALCULATOR)
 
 
 if __name__ == '__main__':
@@ -31,15 +31,16 @@ if __name__ == '__main__':
 
     # Info
     info = Info('2 + 5')
-    window.add_to_vlayout(info)
+    window.add_widget_to_vlayout(info)
 
     # Display
     display = Display()
     display.setPlaceholderText('0')
-    window.add_to_vlayout(display)
+    window.add_widget_to_vlayout(display)
 
-    button = Button('Texto do meu button')
-    window.add_to_vlayout(button)
+    # Grid
+    buttons_grid = ButtonsGrid(display)
+    window.v_layout.addLayout(buttons_grid)
 
     # Fixando o tamanha da janela
     window.adjust_fixed_size()
