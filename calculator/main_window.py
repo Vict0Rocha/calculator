@@ -1,7 +1,7 @@
 import qdarktheme
 from pathlib import Path
 from PySide6.QtCore import Qt, Slot
-from utils import is_empty, is_num_or_dot
+from utils import is_empty, is_num_or_dot, is_valid_number
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QGridLayout,
                                QLineEdit, QLabel, QPushButton)
 
@@ -149,7 +149,13 @@ class ButtonsGrid(QGridLayout):
         return real_slot
 
     def _insert_button_text_to_display(self, button):
-        self.display.insert(button.text())
+        button_text = button.text()
+        new_display_value = self.display.text() + button_text
+
+        if not is_valid_number(new_display_value):
+            return
+
+        self.display.insert(button_text)
 
 
 # QSS - Estilo do QT for python
