@@ -1,6 +1,6 @@
 import qdarktheme
 from pathlib import Path
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Slot
 from utils import is_empty, is_num_or_dot
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QGridLayout,
                                QLineEdit, QLabel, QPushButton)
@@ -116,7 +116,7 @@ class ButtonsGrid(QGridLayout):
             ['7', '8', '9', '*'],
             ['4', '5', '6', '-'],
             ['1', '2', '3', '+'],
-            ['',  '0', '.', '='],
+            ['0',  '', '.', '='],
         ]
         self.display = display
         self._make_grid()
@@ -125,7 +125,13 @@ class ButtonsGrid(QGridLayout):
         for i, row_data in enumerate(self._grid_mask):
             for j, button_text in enumerate(row_data):
                 button = Button(button_text)
+                # Espandindo o meu botão de número 0
+                if button_text == '0':
+                    self.addWidget(button, i, j, 0, 2)
                 self.addWidget(button, i, j)
+
+                if button_text == '':
+                    button.deleteLater()
 
                 # Verificando os botões para estilizar
                 if not is_num_or_dot(button_text) and not is_empty(button_text):
@@ -137,13 +143,13 @@ class ButtonsGrid(QGridLayout):
                 button.clicked.connect(button_slot)
 
     def _make_button_display_slot(self, func, *args, **kwargs):
+        @Slot(bool)
         def real_slot():
             func(*args, **kwargs)
         return real_slot
 
     def _insert_button_text_to_display(self, button):
-        self.display.setText(button.text())
-        print()
+        self.display.insert(button.text())
 
 
 # QSS - Estilo do QT for python

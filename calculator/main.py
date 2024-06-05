@@ -1,7 +1,7 @@
 import sys
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
-from main_window import (MainWindow, Display, Info, Button, ButtonsGrid,
+from main_window import (MainWindow, Display, Info, ButtonsGrid,
                          setup_theme, WINDOW_ICON_PATH_CALCULATOR)
 
 
