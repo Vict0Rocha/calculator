@@ -30,7 +30,7 @@ if __name__ == '__main__':
             u'CompanyName.ProductName.SubProduct.VersionInformation')
 
     # Info
-    info = Info('2 + 5')
+    info = Info('Sua conta')
     window.add_widget_to_vlayout(info)
 
     # Display
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     window.add_widget_to_vlayout(display)
 
     # Grid
-    buttons_grid = ButtonsGrid(display)
+    buttons_grid = ButtonsGrid(display, info)
     window.v_layout.addLayout(buttons_grid)
 
     # Fixando o tamanha da janela

@@ -4,6 +4,7 @@ from PySide6.QtCore import Qt, Slot
 from utils import is_empty, is_num_or_dot, is_valid_number
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QGridLayout,
                                QLineEdit, QLabel, QPushButton)
+# from typing import TYPE_CHECKING
 
 # VARIAVEIS CONSTANTES
 
@@ -108,7 +109,7 @@ Tenho uma matriz, para cada elemento dessa matriz,
 
 
 class ButtonsGrid(QGridLayout):
-    def __init__(self, display: Display, *args, **kwargs) -> None:
+    def __init__(self, display: Display, info: Info, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self._grid_mask = [
@@ -116,22 +117,33 @@ class ButtonsGrid(QGridLayout):
             ['7', '8', '9', '*'],
             ['4', '5', '6', '-'],
             ['1', '2', '3', '+'],
-            ['0',  '', '.', '='],
+            ['',  '0', '.', '='],
         ]
         self.display = display
+        self.info = info
+        self._equation = ''
         self._make_grid()
+
+    @property
+    def equation(self):
+        return self._equation
+
+    @equation.setter
+    def equation(self, value):
+        self._equation = value
+        self.info.setText(value)
 
     def _make_grid(self):
         for i, row_data in enumerate(self._grid_mask):
             for j, button_text in enumerate(row_data):
                 button = Button(button_text)
                 # Espandindo o meu botão de número 0
-                if button_text == '0':
-                    self.addWidget(button, i, j, 0, 2)
+                # if button_text == '0':
+                #     self.addWidget(button, i, j, 0, 2)
                 self.addWidget(button, i, j)
 
-                if button_text == '':
-                    button.deleteLater()
+                # if button_text == '':
+                #     button.deleteLater()
 
                 # Verificando os botões para estilizar
                 if not is_num_or_dot(button_text) and not is_empty(button_text):
