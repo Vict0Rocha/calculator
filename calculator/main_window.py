@@ -25,7 +25,7 @@ DARKEST_PRIMARY_COLOR = '#5e8cd3'
 # Sizing
 BIG_FONT_SIZE = 37
 MEDIUM_FONT_SIZE = 24
-SMALL_FONT_SIZE = 14
+SMALL_FONT_SIZE = 15
 TEXT_MARGIN = 10
 MINIMUM_WITH = 280
 
@@ -122,9 +122,11 @@ class ButtonsGrid(QGridLayout):
         self.display = display
         self.info = info
         self._equation = ''
+        self.equation_initial_value = ''
         self._left = None
         self._right = None
         self._op = None
+        self.equation = self.equation_initial_value
         self._make_grid()
 
     @property
@@ -188,12 +190,30 @@ class ButtonsGrid(QGridLayout):
         self.display.insert(button_text)
 
     def _clear(self):
-        print('Vou fazer outra coisa')
+        self._left = None
+        self._right = None
+        self._op = None
+        self.equation = self.equation_initial_value
         self.display.clear()
 
     def _operator_clicked(self, button):
-        text = button.text()
-        print(text)
+        button_text = button.text()  # Operador +-*/ (etc...)
+        display_text = self.display.text()  # Deverá ser meu número _left
+        self.display.clear()  # Limpa o display
+
+        # Se o usuario clicar no operador sem configurar qualquer número
+        if not is_valid_number(display_text) and self._left is None:
+            print('Nada para colocar')
+            return
+
+        # Se houver algo no número da esquerda, apenas atribuimos o valor
+        # E aguardamos o número da direita.
+        if self._left is None:
+            self._left = float(display_text)
+
+        self._op = button_text
+        self.equation = f'{self._left} {self._op}'
+        # print(button_text)
 
 
 # QSS - Estilo do QT for python
