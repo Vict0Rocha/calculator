@@ -122,6 +122,9 @@ class ButtonsGrid(QGridLayout):
         self.display = display
         self.info = info
         self._equation = ''
+        self._left = None
+        self._right = None
+        self._op = None
         self._make_grid()
 
     @property
@@ -149,12 +152,27 @@ class ButtonsGrid(QGridLayout):
                 if not is_num_or_dot(button_text) and not is_empty(button_text):
                     button.setProperty('cssClass', 'specialButton')
 
-                button_slot = self._make_button_display_slot(
-                    self._insert_button_text_to_display, button
-                )
-                button.clicked.connect(button_slot)
+                slot = self._make_slot(
+                    self._insert_button_text_to_display, button)
+                self._connect_button_clicked(button, slot)
+                self._config_sprecial_button(button)
 
-    def _make_button_display_slot(self, func, *args, **kwargs):
+    def _connect_button_clicked(self, button, slot):
+        button.clicked.connect(slot)
+
+    def _config_sprecial_button(self, button):
+        text = button.text()
+
+        if text == 'C':
+            self._connect_button_clicked(button, self._clear)
+
+        if text in '+-/*':
+            self._connect_button_clicked(
+                button,
+                self._make_slot(self._operator_clicked, button)
+            )
+
+    def _make_slot(self, func, *args, **kwargs):
         @Slot(bool)
         def real_slot():
             func(*args, **kwargs)
@@ -168,6 +186,14 @@ class ButtonsGrid(QGridLayout):
             return
 
         self.display.insert(button_text)
+
+    def _clear(self):
+        print('Vou fazer outra coisa')
+        self.display.clear()
+
+    def _operator_clicked(self, button):
+        text = button.text()
+        print(text)
 
 
 # QSS - Estilo do QT for python
