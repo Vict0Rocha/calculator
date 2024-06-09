@@ -114,7 +114,7 @@ class ButtonsGrid(QGridLayout):
         super().__init__(*args, **kwargs)
 
         self._grid_mask = [
-            ['C', 'CE', '^', '/'],
+            ['CE', 'C', '^', '/'],
             ['7', '8', '9', '*'],
             ['4', '5', '6', '-'],
             ['1', '2', '3', '+'],
