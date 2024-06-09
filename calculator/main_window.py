@@ -230,7 +230,9 @@ class ButtonsGrid(QGridLayout):
         display_text = self.display.text()
 
         if not is_valid_number(display_text):
-            self._show_error('Formato inválido, digite o operador da direitra')
+            self._show_error(
+                'Formato inválido, digite o operador da direitra.'
+            )
             return
 
         self._right = float(display_text)
@@ -243,9 +245,11 @@ class ButtonsGrid(QGridLayout):
             else:
                 result = eval(self.equation)
         except ZeroDivisionError:
-            self._show_error('Não é possivél dividir por 0')
+            self._show_error('Não é possivél dividir por 0.')
         except OverflowError:
-            self._show_error('Número muito grande')
+            self._show_error(
+                'Estourou, não é possivel realizar essa conta.'
+            )
 
         self.display.clear()
         self.info.setText(f'{self.equation} = {result}')
