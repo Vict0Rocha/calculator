@@ -1,4 +1,5 @@
 import qdarktheme
+import math
 from pathlib import Path
 from PySide6.QtCore import Qt, Slot
 from utils import is_empty, is_num_or_dot, is_valid_number
@@ -168,7 +169,7 @@ class ButtonsGrid(QGridLayout):
         if text == 'C':
             self._connect_button_clicked(button, self._clear)
 
-        if text in '+-/*':
+        if text in '+-/*^':
             self._connect_button_clicked(
                 button,
                 self._make_slot(self._operator_clicked, button)
@@ -206,7 +207,7 @@ class ButtonsGrid(QGridLayout):
 
         # Se o usuario clicar no operador sem configurar qualquer número
         if not is_valid_number(display_text) and self._left is None:
-            print('Nada para colocar')
+            print('Nada para colocar a esquerda')
             return
 
         # Se houver algo no número da esquerda, apenas atribuimos o valor
@@ -227,17 +228,25 @@ class ButtonsGrid(QGridLayout):
 
         self._right = float(display_text)
         self.equation = f'{self._left} {self._op} {self._right}'
-        result = 0.0
+        result = 'erro'
 
         try:
-            result = eval(self.equation)
+            if '^' in self.equation and isinstance(self._left, float):
+                result = math.pow(self._left, self._right)
+            else:
+                result = eval(self.equation)
         except ZeroDivisionError:
             print('Zero Division Error')
+        except OverflowError:
+            print('Número muito grande')
 
         self.display.clear()
         self.info.setText(f'{self.equation} = {result}')
         self._left = result
         self._right = None
+
+        if result == 'erro':
+            self._left = None
 
 
 # QSS - Estilo do QT for python
