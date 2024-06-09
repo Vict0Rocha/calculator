@@ -39,7 +39,7 @@ if __name__ == '__main__':
     window.add_widget_to_vlayout(display)
 
     # Grid
-    buttons_grid = ButtonsGrid(display, info)
+    buttons_grid = ButtonsGrid(display, info, window)
     window.v_layout.addLayout(buttons_grid)
 
     # Fixando o tamanha da janela
