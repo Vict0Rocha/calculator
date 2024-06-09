@@ -1,9 +1,10 @@
+import math
 import qdarktheme
 from pathlib import Path
 from PySide6.QtCore import Qt, Slot
 from utils import is_empty, is_num_or_dot, is_valid_number
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QGridLayout,
-                               QLineEdit, QLabel, QPushButton)
+                               QLineEdit, QLabel, QPushButton, QMessageBox)
 # from typing import TYPE_CHECKING
 
 # VARIAVEIS CONSTANTES
@@ -57,6 +58,9 @@ class MainWindow(QMainWindow):
     def add_widget_to_vlayout(self, widget: QWidget):
         self.v_layout.addWidget(widget)
 
+    def make_msg_box(self):
+        return QMessageBox(self)
+
 
 class Display(QLineEdit):
     def __init__(self, *args, **kwargs):
@@ -109,11 +113,11 @@ Tenho uma matriz, para cada elemento dessa matriz,
 
 
 class ButtonsGrid(QGridLayout):
-    def __init__(self, display: Display, info: Info, *args, **kwargs) -> None:
+    def __init__(self, display: Display, info: Info, window: MainWindow, * args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self._grid_mask = [
-            ['C', '◀', '^', '/'],
+            ['CE', 'C', '^', '/'],
             ['7', '8', '9', '*'],
             ['4', '5', '6', '-'],
             ['1', '2', '3', '+'],
@@ -121,6 +125,7 @@ class ButtonsGrid(QGridLayout):
         ]
         self.display = display
         self.info = info
+        self.window = window
         self._equation = ''
         self.equation_initial_value = ''
         self._left = None
@@ -168,7 +173,10 @@ class ButtonsGrid(QGridLayout):
         if text == 'C':
             self._connect_button_clicked(button, self._clear)
 
-        if text in '+-/*':
+        if text == 'CE':
+            self._connect_button_clicked(button, self.display.backspace)
+
+        if text in '+-/*^':
             self._connect_button_clicked(
                 button,
                 self._make_slot(self._operator_clicked, button)
@@ -206,7 +214,7 @@ class ButtonsGrid(QGridLayout):
 
         # Se o usuario clicar no operador sem configurar qualquer número
         if not is_valid_number(display_text) and self._left is None:
-            print('Nada para colocar')
+            self._show_error('Formato inválido, você não digitou nada.')
             return
 
         # Se houver algo no número da esquerda, apenas atribuimos o valor
@@ -222,22 +230,49 @@ class ButtonsGrid(QGridLayout):
         display_text = self.display.text()
 
         if not is_valid_number(display_text):
-            print('Nada para a direita')
+            self._show_error(
+                'Formato inválido, digite o operador da direitra.'
+            )
             return
 
         self._right = float(display_text)
         self.equation = f'{self._left} {self._op} {self._right}'
-        result = 0.0
+        result = 'erro'
 
         try:
-            result = eval(self.equation)
+            if '^' in self.equation and isinstance(self._left, float):
+                result = math.pow(self._left, self._right)
+            else:
+                result = eval(self.equation)
         except ZeroDivisionError:
-            print('Zero Division Error')
+            self._show_error('Não é possivél dividir por 0.')
+        except OverflowError:
+            self._show_error(
+                'Estourou, não é possivel realizar essa conta.'
+            )
 
         self.display.clear()
         self.info.setText(f'{self.equation} = {result}')
         self._left = result
         self._right = None
+
+        if result == 'erro':
+            self._left = None
+
+    def _make_dialog(self, text):
+        msg_box = self.window.make_msg_box()
+        msg_box.setText(text)
+        return msg_box
+
+    def _show_error(self, text):
+        msgBox = self._make_dialog(text)
+        msgBox.setIcon(msgBox.Icon.NoIcon)
+        msgBox.exec()
+
+    def _show_info(self, text):
+        msgBox = self._make_dialog(text)
+        msgBox.setIcon(msgBox.Icon.Information)
+        msgBox.exec()
 
 
 # QSS - Estilo do QT for python
