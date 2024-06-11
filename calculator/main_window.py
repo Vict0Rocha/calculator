@@ -1,7 +1,9 @@
 import math
+from PySide6.QtGui import QKeyEvent
 import qdarktheme
 from pathlib import Path
-from PySide6.QtCore import Qt, Slot
+from PySide6.QtGui import QKeyEvent
+from PySide6.QtCore import Qt, Slot, Signal
 from utils import is_empty, is_num_or_dot, is_valid_number
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QGridLayout,
                                QLineEdit, QLabel, QPushButton, QMessageBox)
@@ -63,6 +65,12 @@ class MainWindow(QMainWindow):
 
 
 class Display(QLineEdit):
+    eq_pressed = Signal()
+    del_pressed = Signal()
+    clear_pressed = Signal()
+    imput_pressed = Signal(str)
+    operator_pressed = Signal(str)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.config_style()
@@ -80,7 +88,44 @@ class Display(QLineEdit):
         margin = [TEXT_MARGIN for _ in range(4)]
         self.setTextMargins(*margin)
 
-# O label(Infor) que fica em cima do display - é tipo um cache ou flashcards
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        # Pegando o texto da tecla digitada sem espaços
+        text = event.text().strip()
+        key = event.key()  # Pegando minha tecla
+        KEYS = Qt.Key  # Valores para as teclas
+        is_enter = key in [KEYS.Key_Enter, KEYS.Key_Return]
+        is_delete = key in [KEYS.Key_Backspace, KEYS.Key_Delete]
+        is_esc = key in [KEYS.Key_Escape]
+        is_operator = key in [KEYS.Key_Plus, KEYS.Key_Minus,
+                              KEYS.Key_Slash, KEYS.Key_Asterisk, KEYS.Key_P]
+
+        if is_enter or text == '=':
+            self.eq_pressed.emit()  # Mandando a solicitadação para minha grid
+            return event.ignore()
+
+        if is_delete or text.lower() == 'd':
+            self.del_pressed.emit()
+            return event.ignore()
+
+        if is_esc or text.lower() == 'c':
+            self.clear_pressed.emit()
+            return event.ignore()
+
+        if is_operator:
+            if text.lower() == 'p':
+                text = '^'
+            self.operator_pressed.emit(text)
+            return event.ignore()
+
+        # Não passar daqui, se não tiver texto
+        if is_empty(text):
+            return event.ignore()
+
+        if is_num_or_dot(text):
+            self.imput_pressed.emit(text)
+            return event.ignore()
+
+# O label(Infor) que fica em cima do display - é tipo um cache ou flashcard
 
 
 class Info(QLabel):
@@ -144,18 +189,17 @@ class ButtonsGrid(QGridLayout):
         self.info.setText(value)
 
     def _make_grid(self):
+        self.display.eq_pressed.connect(lambda: print(123))
+        self.display.del_pressed.connect(self.display.backspace)
+        self.display.clear_pressed.connect(lambda: print(123))
+        self.display.imput_pressed.connect(lambda: print(123))
+        self.display.operator_pressed.connect(lambda: print(123))
+
         for i, row_data in enumerate(self._grid_mask):
             for j, button_text in enumerate(row_data):
                 button = Button(button_text)
-                # Espandindo o meu botão de número 0
-                # if button_text == '0':
-                #     self.addWidget(button, i, j, 0, 2)
                 self.addWidget(button, i, j)
 
-                # if button_text == '':
-                #     button.deleteLater()
-
-                # Verificando os botões para estilizar
                 if not is_num_or_dot(button_text) and not is_empty(button_text):
                     button.setProperty('cssClass', 'specialButton')
 
