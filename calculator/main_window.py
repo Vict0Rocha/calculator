@@ -68,6 +68,8 @@ class Display(QLineEdit):
     eq_pressed = Signal()
     del_pressed = Signal()
     clear_pressed = Signal()
+    imput_pressed = Signal(str)
+    operator_pressed = Signal(str)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -94,28 +96,36 @@ class Display(QLineEdit):
         is_enter = key in [KEYS.Key_Enter, KEYS.Key_Return]
         is_delete = key in [KEYS.Key_Backspace, KEYS.Key_Delete]
         is_esc = key in [KEYS.Key_Escape]
+        is_operator = key in [KEYS.Key_Plus, KEYS.Key_Minus,
+                              KEYS.Key_Slash, KEYS.Key_Asterisk, KEYS.Key_P]
 
         if is_enter or text == '=':
-            print('ENTER - SINAL DE', type(self).__name__)
             self.eq_pressed.emit()  # Mandando a solicitadação para minha grid
             return event.ignore()
 
         if is_delete or text.lower() == 'd':
-            print('DELETE - SINAL DE', type(self).__name__)
             self.del_pressed.emit()
             return event.ignore()
 
         if is_esc or text.lower() == 'c':
-            print('ESC - SINAL DE', type(self).__name__)
             self.clear_pressed.emit()
+            return event.ignore()
+
+        if is_operator:
+            if text.lower() == 'p':
+                text = '^'
+            self.operator_pressed.emit(text)
             return event.ignore()
 
         # Não passar daqui, se não tiver texto
         if is_empty(text):
             return event.ignore()
 
-        print('teste', text)
-# O label(Infor) que fica em cima do display - é tipo um cache ou flashcards
+        if is_num_or_dot(text):
+            self.imput_pressed.emit(text)
+            return event.ignore()
+
+# O label(Infor) que fica em cima do display - é tipo um cache ou flashcard
 
 
 class Info(QLabel):
@@ -182,6 +192,8 @@ class ButtonsGrid(QGridLayout):
         self.display.eq_pressed.connect(lambda: print(123))
         self.display.del_pressed.connect(self.display.backspace)
         self.display.clear_pressed.connect(lambda: print(123))
+        self.display.imput_pressed.connect(lambda: print(123))
+        self.display.operator_pressed.connect(lambda: print(123))
 
         for i, row_data in enumerate(self._grid_mask):
             for j, button_text in enumerate(row_data):
