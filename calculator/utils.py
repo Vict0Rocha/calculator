@@ -24,3 +24,12 @@ def is_valid_number(string: str):
 
 def is_empty(string: str):
     return len(string) == 0
+
+
+def convert_to_number(string: str):
+    number = float(string)
+
+    if number.is_integer():
+        number = int(number)
+
+    return number

@@ -4,7 +4,7 @@ import qdarktheme
 from pathlib import Path
 from PySide6.QtGui import QKeyEvent
 from PySide6.QtCore import Qt, Slot, Signal
-from utils import is_empty, is_num_or_dot, is_valid_number
+from utils import is_empty, is_num_or_dot, is_valid_number, convert_to_number
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QGridLayout,
                                QLineEdit, QLabel, QPushButton, QMessageBox)
 # from typing import TYPE_CHECKING
@@ -158,7 +158,8 @@ Tenho uma matriz, para cada elemento dessa matriz,
 
 
 class ButtonsGrid(QGridLayout):
-    def __init__(self, display: Display, info: Info, window: MainWindow, * args, **kwargs) -> None:
+    def __init__(self, display: Display, info: Info, window: MainWindow,
+                 * args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self._grid_mask = [
@@ -166,7 +167,7 @@ class ButtonsGrid(QGridLayout):
             ['7', '8', '9', '*'],
             ['4', '5', '6', '-'],
             ['1', '2', '3', '+'],
-            ['',  '0', '.', '='],
+            ['N',  '0', '.', '='],
         ]
         self.display = display
         self.info = info
@@ -190,7 +191,7 @@ class ButtonsGrid(QGridLayout):
 
     def _make_grid(self):
         self.display.eq_pressed.connect(self._eq)
-        self.display.del_pressed.connect(self.display.backspace)
+        self.display.del_pressed.connect(self._backspace)
         self.display.clear_pressed.connect(self._clear)
         self.display.imput_pressed.connect(self._insert_to_display)
         self.display.operator_pressed.connect(self._config_left_op)
@@ -217,7 +218,10 @@ class ButtonsGrid(QGridLayout):
             self._connect_button_clicked(button, self._clear)
 
         if text == 'CE':
-            self._connect_button_clicked(button, self.display.backspace)
+            self._connect_button_clicked(button, self._backspace)
+
+        if text == 'N':
+            self._connect_button_clicked(button, self._invert_number)
 
         if text in '+-/*^':
             self._connect_button_clicked(
@@ -235,6 +239,18 @@ class ButtonsGrid(QGridLayout):
         return real_slot
 
     @Slot()
+    def _invert_number(self):
+        display_text = self.display.text()
+
+        if not is_valid_number(display_text):
+            return
+
+        number = convert_to_number(display_text) * -1
+        self.display.setFocus()
+
+        self.display.setText(str(number))
+
+    @Slot()
     def _insert_to_display(self, text):
         new_display_value = self.display.text() + text
 
@@ -242,6 +258,7 @@ class ButtonsGrid(QGridLayout):
             return
 
         self.display.insert(text)
+        self.display.setFocus()
 
     @Slot()
     def _clear(self):
@@ -250,6 +267,7 @@ class ButtonsGrid(QGridLayout):
         self._op = None
         self.equation = self.equation_initial_value
         self.display.clear()
+        self.display.setFocus()
 
     @Slot()
     def _config_left_op(self, text):
@@ -264,7 +282,7 @@ class ButtonsGrid(QGridLayout):
         # Se houver algo no número da esquerda, apenas atribuimos o valor
         # E aguardamos o número da direita.
         if self._left is None:
-            self._left = float(display_text)
+            self._left = convert_to_number(display_text)
 
         self._op = text
         self.equation = f'{self._left} {self._op}'
@@ -274,7 +292,7 @@ class ButtonsGrid(QGridLayout):
     def _eq(self):
         display_text = self.display.text()
 
-        if not is_valid_number(display_text):
+        if not is_valid_number(display_text) or self._left is None:
             self._show_error(
                 'Formato inválido, digite o operador da direitra.'
             )
@@ -285,8 +303,9 @@ class ButtonsGrid(QGridLayout):
         result = 'erro'
 
         try:
-            if '^' in self.equation and isinstance(self._left, float):
+            if '^' in self.equation and isinstance(self._left, int | float):
                 result = math.pow(self._left, self._right)
+                result = convert_to_number(str(result))
             else:
                 result = eval(self.equation)
         except ZeroDivisionError:
@@ -300,9 +319,15 @@ class ButtonsGrid(QGridLayout):
         self.info.setText(f'{self.equation} = {result}')
         self._left = result
         self._right = None
+        self.display.setFocus()
 
         if result == 'erro':
             self._left = None
+
+    @Slot()
+    def _backspace(self):
+        self.display.backspace()
+        self.display.setFocus()
 
     def _make_dialog(self, text):
         msg_box = self.window.make_msg_box()
@@ -313,11 +338,13 @@ class ButtonsGrid(QGridLayout):
         msgBox = self._make_dialog(text)
         msgBox.setIcon(msgBox.Icon.NoIcon)
         msgBox.exec()
+        self.display.setFocus()
 
     def _show_info(self, text):
         msgBox = self._make_dialog(text)
         msgBox.setIcon(msgBox.Icon.Information)
         msgBox.exec()
+        self.display.setFocus()
 
 
 # QSS - Estilo do QT for python
