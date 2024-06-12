@@ -189,11 +189,11 @@ class ButtonsGrid(QGridLayout):
         self.info.setText(value)
 
     def _make_grid(self):
-        self.display.eq_pressed.connect(lambda: print(123))
+        self.display.eq_pressed.connect(self._eq)
         self.display.del_pressed.connect(self.display.backspace)
-        self.display.clear_pressed.connect(lambda: print(123))
-        self.display.imput_pressed.connect(lambda: print(123))
-        self.display.operator_pressed.connect(lambda: print(123))
+        self.display.clear_pressed.connect(self._clear)
+        self.display.imput_pressed.connect(self._insert_to_display)
+        self.display.operator_pressed.connect(self._config_left_op)
 
         for i, row_data in enumerate(self._grid_mask):
             for j, button_text in enumerate(row_data):
@@ -203,8 +203,7 @@ class ButtonsGrid(QGridLayout):
                 if not is_num_or_dot(button_text) and not is_empty(button_text):
                     button.setProperty('cssClass', 'specialButton')
 
-                slot = self._make_slot(
-                    self._insert_button_text_to_display, button)
+                slot = self._make_slot(self._insert_to_display, button_text)
                 self._connect_button_clicked(button, slot)
                 self._config_sprecial_button(button)
 
@@ -223,7 +222,7 @@ class ButtonsGrid(QGridLayout):
         if text in '+-/*^':
             self._connect_button_clicked(
                 button,
-                self._make_slot(self._operator_clicked, button)
+                self._make_slot(self._config_left_op, text)
             )
 
         if text in '=':
@@ -235,15 +234,16 @@ class ButtonsGrid(QGridLayout):
             func(*args, **kwargs)
         return real_slot
 
-    def _insert_button_text_to_display(self, button):
-        button_text = button.text()
-        new_display_value = self.display.text() + button_text
+    @Slot()
+    def _insert_to_display(self, text):
+        new_display_value = self.display.text() + text
 
         if not is_valid_number(new_display_value):
             return
 
-        self.display.insert(button_text)
+        self.display.insert(text)
 
+    @Slot()
     def _clear(self):
         self._left = None
         self._right = None
@@ -251,8 +251,8 @@ class ButtonsGrid(QGridLayout):
         self.equation = self.equation_initial_value
         self.display.clear()
 
-    def _operator_clicked(self, button):
-        button_text = button.text()  # Operador +-*/ (etc...)
+    @Slot()
+    def _config_left_op(self, text):
         display_text = self.display.text()  # Deverá ser meu número _left
         self.display.clear()  # Limpa o display
 
@@ -266,10 +266,11 @@ class ButtonsGrid(QGridLayout):
         if self._left is None:
             self._left = float(display_text)
 
-        self._op = button_text
+        self._op = text
         self.equation = f'{self._left} {self._op}'
         # print(button_text)
 
+    @Slot()
     def _eq(self):
         display_text = self.display.text()
 
