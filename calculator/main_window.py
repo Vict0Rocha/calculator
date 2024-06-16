@@ -1,7 +1,5 @@
 import math
-from PySide6.QtGui import QKeyEvent
-import qdarktheme
-from pathlib import Path
+from theme import *
 from PySide6.QtGui import QKeyEvent
 from PySide6.QtCore import Qt, Slot, Signal
 from utils import is_empty, is_num_or_dot, is_valid_number, convert_to_number
@@ -9,34 +7,12 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QGridLayout,
                                QLineEdit, QLabel, QPushButton, QMessageBox)
 # from typing import TYPE_CHECKING
 
-# VARIAVEIS CONSTANTES
-
-# Pegando o caminho absoluto do diretório do meu projeto
-ROOT_DIR = Path(__file__).parent
-# Caminho da pasta do meus icones
-FILE_DIR = ROOT_DIR / 'icons'
-# Caminho do arquvio em si
-WINDOW_ICON_PATH_OM = FILE_DIR / 'icon.png'
-WINDOW_ICON_PATH_CALCULATOR = FILE_DIR / 'calculator_icon.png'
-WINDOW_ICON_PATH_GOOGLE = FILE_DIR / 'calculate_icon_google.png'
-
-# Colors
-PRIMARY_COLOR = '#215fa2'
-DARKER_PRIMARY_COLOR = '#4076bb'
-DARKEST_PRIMARY_COLOR = '#5e8cd3'
-
-# Sizing
-BIG_FONT_SIZE = 37
-MEDIUM_FONT_SIZE = 24
-SMALL_FONT_SIZE = 15
-TEXT_MARGIN = 10
-MINIMUM_WITH = 280
-
-
 # Parent é uma janela pai, que vem antes dela.
 # Nosso projetos não tera, mas colocamos somente para manter um padrão.
 
 # Janela principal
+
+
 class MainWindow(QMainWindow):
     def __init__(self, parent: QWidget | None = None, *args, **kwargs) -> None:
         super().__init__(parent, *args, **kwargs)
@@ -151,7 +127,7 @@ class Button(QPushButton):
         # self.setProperty('cssClass', 'specialButton')
 
 
-'''Grid de botões 
+'''Grid de botões
 Tenho uma matriz, para cada elemento dessa matriz,
 é criado e adicionada um novo botão na minha grid.
 '''
@@ -167,7 +143,7 @@ class ButtonsGrid(QGridLayout):
             ['7', '8', '9', '*'],
             ['4', '5', '6', '-'],
             ['1', '2', '3', '+'],
-            ['N',  '0', '.', '='],
+            ['+/-',  '0', '.', '='],
         ]
         self.display = display
         self.info = info
@@ -180,11 +156,11 @@ class ButtonsGrid(QGridLayout):
         self.equation = self.equation_initial_value
         self._make_grid()
 
-    @property
+    @ property
     def equation(self):
         return self._equation
 
-    @equation.setter
+    @ equation.setter
     def equation(self, value):
         self._equation = value
         self.info.setText(value)
@@ -201,7 +177,8 @@ class ButtonsGrid(QGridLayout):
                 button = Button(button_text)
                 self.addWidget(button, i, j)
 
-                if not is_num_or_dot(button_text) and not is_empty(button_text):
+                if not is_num_or_dot(button_text) and not is_empty(button_text)\
+                        and not button_text == '+/-':
                     button.setProperty('cssClass', 'specialButton')
 
                 slot = self._make_slot(self._insert_to_display, button_text)
@@ -220,7 +197,7 @@ class ButtonsGrid(QGridLayout):
         if text == 'CE':
             self._connect_button_clicked(button, self._backspace)
 
-        if text == 'N':
+        if text == '+/-':
             self._connect_button_clicked(button, self._invert_number)
 
         if text in '+-/*^':
@@ -233,12 +210,12 @@ class ButtonsGrid(QGridLayout):
             self._connect_button_clicked(button, self._eq)
 
     def _make_slot(self, func, *args, **kwargs):
-        @Slot(bool)
+        @ Slot(bool)
         def real_slot():
             func(*args, **kwargs)
         return real_slot
 
-    @Slot()
+    @ Slot()
     def _invert_number(self):
         display_text = self.display.text()
 
@@ -250,7 +227,7 @@ class ButtonsGrid(QGridLayout):
 
         self.display.setText(str(number))
 
-    @Slot()
+    @ Slot()
     def _insert_to_display(self, text):
         new_display_value = self.display.text() + text
 
@@ -260,7 +237,7 @@ class ButtonsGrid(QGridLayout):
         self.display.insert(text)
         self.display.setFocus()
 
-    @Slot()
+    @ Slot()
     def _clear(self):
         self._left = None
         self._right = None
@@ -269,7 +246,7 @@ class ButtonsGrid(QGridLayout):
         self.display.clear()
         self.display.setFocus()
 
-    @Slot()
+    @ Slot()
     def _config_left_op(self, text):
         display_text = self.display.text()  # Deverá ser meu número _left
         self.display.clear()  # Limpa o display
@@ -288,7 +265,7 @@ class ButtonsGrid(QGridLayout):
         self.equation = f'{self._left} {self._op}'
         # print(button_text)
 
-    @Slot()
+    @ Slot()
     def _eq(self):
         display_text = self.display.text()
 
@@ -324,7 +301,7 @@ class ButtonsGrid(QGridLayout):
         if result == 'erro':
             self._left = None
 
-    @Slot()
+    @ Slot()
     def _backspace(self):
         self.display.backspace()
         self.display.setFocus()
@@ -345,43 +322,3 @@ class ButtonsGrid(QGridLayout):
         msgBox.setIcon(msgBox.Icon.Information)
         msgBox.exec()
         self.display.setFocus()
-
-
-# QSS - Estilo do QT for python
-# https://pypi.org/project/qt-material
-# Dark Theme
-# https://pypi.org/project/pyqtdarktheme
-# Outra alternativa
-# https://doc.qt.io/qtforpython-6/tutorials/basictutorial/widgetstyling.html
-qss = f"""
-    QPushButton[cssClass="specialButton"] {{
-        color: #fff;
-        background: {PRIMARY_COLOR};
-    }}
-    QPushButton[cssClass="specialButton"]:hover {{
-        color: #fff;
-        background: {DARKER_PRIMARY_COLOR};
-    }}
-    QPushButton[cssClass="specialButton"]:pressed {{
-        color: #fff;
-        background: {DARKEST_PRIMARY_COLOR};
-    }}
-"""
-
-# Tema da calculadora
-
-
-def setup_theme():
-    qdarktheme.setup_theme(
-        theme='dark',
-        corner_shape='rounded',
-        custom_colors={
-            "[dark]": {
-                "primary": "#d2ffff",
-            },
-            "[light]": {
-                "primary": f"{PRIMARY_COLOR}",
-            },
-        },
-        additional_qss=qss
-    )
