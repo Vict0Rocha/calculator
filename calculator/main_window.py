@@ -275,7 +275,7 @@ class ButtonsGrid(QGridLayout):
             )
             return
 
-        self._right = float(display_text)
+        self._right = convert_to_number(display_text)
         self.equation = f'{self._left} {self._op} {self._right}'
         result = 'erro'
 
