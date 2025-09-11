@@ -12,25 +12,27 @@ Para criar o ambiente virtual.
 ```python
 python -m venv venv
 ```
-Para ativar o ambiente (no windows).
+Para ativar o ambiente "windows".
 ```python
 .\venv\Scripts\activate
 ```
 ## Dependências <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Symbols/Exclamation%20Mark.webp" alt="Exclamation Mark" width="25" height="25" />
 * PySide6 - Para fazer a interface e os eventos.
-* PyQtDarkTheme - Tema utilizado.
+* qdarkstyle - Para configurar o tema.
   
 Requirements - Com esse comando será instalado todas as dependências de uma vez.<br/>
 ```python
 pip install -r requirements.txt 
 ```
-### *_PySide6_*
+### Caso queira instalar as bibliotecas de forma individual. 
+
+#### *_PySide6_*
 ```python
 pip install PySide6
 ```
-### *_pyqtdarktheme_*
+#### *_qdarkstyle_*
 ```python
-pip install pyqtdarktheme
+pip install qdarkstyle
 ```
 # 
 <img src="https://github.com/Vict0Rocha/calculator/assets/107584325/9b3f7d42-6531-4713-9041-182ff4c75126" alt="300px" width="300px"> <br/>
