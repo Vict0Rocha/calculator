@@ -49,6 +49,13 @@ pip install qdarkstyle
 
 ---
 
+## "Opcional" Caso queira gerar um executavel 
+
+```python
+pyinstaller --name=Calculadora --noconfirm --onefile --add-data="calculator/icons;icons" --icon="calculator/icons/calculator_icon.png" --noconsole --clean --log-level=WARN calculator/main.py
+```
+---
+
 <p align="center">
   <img src="https://github.com/Vict0Rocha/calculator/assets/107584325/9b3f7d42-6531-4713-9041-182ff4c75126" alt="300px" width="300px"> <br/>
 </p>
