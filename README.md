@@ -38,7 +38,7 @@ pip install qdarkstyle
 
 ---
 
-### Para rodar o projeto, é só executar o arquivo: *main.py*
+### Para rodar o projeto, é só executar o arquivo: ```main.py```
 
 ---
 
