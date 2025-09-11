@@ -1,4 +1,4 @@
-import qdarktheme
+import qdarkstyle
 from pathlib import Path
 
 # Pegando o caminho absoluto do diretório do meu projeto
@@ -44,17 +44,25 @@ qss = f"""
 # Tema da calculadora
 
 
-def setup_theme():
-    qdarktheme.setup_theme(
-        theme='dark',
-        corner_shape='rounded',
-        custom_colors={
-            "[dark]": {
-                "primary": "#d2ffff",
-            },
-            "[light]": {
-                "primary": f"{PRIMARY_COLOR}",
-            },
-        },
-        additional_qss=qss
-    )
+# def setup_theme():
+#     qdarktheme.setup_theme(
+#         theme='dark',
+#         corner_shape='rounded',
+#         custom_colors={
+#             "[dark]": {
+#                 "primary": "#d2ffff",
+#             },
+#             "[light]": {
+#                 "primary": f"{PRIMARY_COLOR}",
+#             },
+#         },
+#         additional_qss=qss
+#     )
+
+
+def setupTheme(app):
+    # Aplicar o estilo escuro do qdarkstyle
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyside6())
+ 
+    # Sobrepor com o QSS personalizado para estilização adicional
+    app.setStyleSheet(app.styleSheet() + qss)

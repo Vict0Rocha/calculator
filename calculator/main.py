@@ -2,13 +2,13 @@ import sys
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 from main_window import (MainWindow, Display, Info, ButtonsGrid,
-                         setup_theme, WINDOW_ICON_PATH_CALCULATOR)
+                         setupTheme, WINDOW_ICON_PATH_CALCULATOR)
 
 
 if __name__ == '__main__':
     # Cria a aplicação
     app = QApplication()
-    setup_theme()
+    setupTheme(app)
     window = MainWindow()
 
     # Define o ícone
