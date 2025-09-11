@@ -22,7 +22,7 @@ Para ativar o ambiente (no windows).
   
 Requirements - Com esse comando será instalado todas as dependências de uma vez.<br/>
 ```python
-pip install -r requirements.tx 
+pip install -r requirements.txt 
 ```
 ### *_PySide6_*
 ```python
