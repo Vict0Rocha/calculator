@@ -38,6 +38,10 @@ pip install qdarkstyle
 
 ---
 
+### Para rodar o projeto, é só executar o arquivo: *main.py*
+
+---
+
 ## Links das documentações <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Objects/Books.webp" alt="Books" width="25" height="25" /> 
 
 [Qt for python - PySide](https://doc.qt.io/qtforpython-6/) <br/>
