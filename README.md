@@ -18,7 +18,7 @@ Para ativar o ambiente "windows".
 ```
 ## Dependências <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Symbols/Exclamation%20Mark.webp" alt="Exclamation Mark" width="25" height="25" />
 * PySide6 - Para fazer a interface e os eventos.
-* qdarkstyle - Para configurar o tema.
+* QDarkStyle - Para configurar o tema.
   
 Requirements - Com esse comando será instalado todas as dependências de uma vez.<br/>
 ```python
@@ -30,17 +30,22 @@ pip install -r requirements.txt
 ```python
 pip install PySide6
 ```
-#### *_qdarkstyle_*
+#### *_QDarkStyle _*
 ```python
 pip install qdarkstyle
 ```
-# 
-<img src="https://github.com/Vict0Rocha/calculator/assets/107584325/9b3f7d42-6531-4713-9041-182ff4c75126" alt="300px" width="300px"> <br/>
-#
 
-## Links das documentações utilizadas <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Objects/Books.webp" alt="Books" width="25" height="25" /> 
+---
+
+<img src="https://github.com/Vict0Rocha/calculator/assets/107584325/9b3f7d42-6531-4713-9041-182ff4c75126" alt="300px" width="300px"> <br/>
+
+
+---
+
+## Links das documentações <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Objects/Books.webp" alt="Books" width="25" height="25" /> 
+
 [Qt for python - PySide](https://doc.qt.io/qtforpython-6/) <br/>
-[PyQtDarkTheme - Tema utilizado](https://pyqtdarktheme.readthedocs.io/en/stable) 
+[QDarkStyle - Tema utilizado](https://qdarkstylesheet.readthedocs.io/en/latest/reference/qdarkstyle.html) 
 
 
 
